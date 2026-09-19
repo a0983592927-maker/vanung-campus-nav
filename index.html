@@ -14,7 +14,7 @@
 .canvas{position:absolute;inset:0;padding-top:80px;padding-bottom:205px;overflow:auto;background:#dde5e9;-webkit-overflow-scrolling:touch}
 .mapCard{width:min(100%,1536px);min-width:690px;margin:0 auto;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.09)}
 svg{display:block;width:100%;height:auto;touch-action:manipulation}
-.building{stroke:#8a8f93;stroke-width:1.2;cursor:pointer}.building.sel{stroke:#1677ff;stroke-width:6}.blabel{font-weight:800;fill:#222;text-anchor:middle;pointer-events:none}.bcode{font-weight:900}.road{fill:#dedede}.stream{fill:#6faed4}.walk{fill:#f4eb20}.campusBorder{fill:none;stroke:#333;stroke-width:2;stroke-dasharray:18 18}.poiText{font-size:18px;font-weight:800;fill:#30343a;text-anchor:middle}.route{stroke:#1677ff;stroke-width:9;stroke-linecap:round;fill:none}.gpsAcc{fill:rgba(22,119,255,.13);stroke:rgba(22,119,255,.35);stroke-width:2}.gpsDot{fill:#1677ff;stroke:#fff;stroke-width:6}
+.building{stroke:#8a8f93;stroke-width:1.2;cursor:pointer}.building.sel{stroke:#1677ff;stroke-width:6}.blabel{font-weight:800;fill:#222;text-anchor:middle;pointer-events:none}.bcode{font-weight:900}.road{fill:#dedede}.stream{fill:#6faed4}.walk{fill:#f4eb20}.campusBorder{fill:none;stroke:#333;stroke-width:2;stroke-dasharray:18 18}.poiText{font-size:18px;font-weight:800;fill:#30343a;text-anchor:middle}.route{stroke:#1677ff;stroke-width:9;stroke-linecap:round;fill:none}.gpsAcc{fill:rgba(22,119,255,.13);stroke:rgba(22,119,255,.35);stroke-width:2}.gpsDot{fill:#1677ff;stroke:#fff;stroke-width:6}.exitMark{fill:#fff;stroke:#d97706;stroke-width:4}.exitTxt{font-size:18px;font-weight:900;fill:#9a4b00;text-anchor:middle;pointer-events:none}
 .fabs{position:absolute;right:12px;bottom:214px;z-index:20;display:grid;gap:10px}.fab{width:54px;height:54px;border:0;border-radius:18px;background:#fff;box-shadow:var(--sh);font-size:22px}.fab.on{background:#edf4ff;color:var(--b)}
 .sheet{position:absolute;z-index:20;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 10px);background:var(--card);border-radius:24px;box-shadow:var(--sh);padding:12px}.grab{width:40px;height:4px;background:#d9dde3;border-radius:99px;margin:0 auto 8px}.title{font-size:18px;font-weight:900}.sub{font-size:12px;color:var(--m);margin-top:4px}.quick{display:flex;gap:8px;overflow:auto;padding-top:10px}.chip{flex:0 0 auto;border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:9px 12px;font-size:14px}.chip.main{background:#e9f8ef;border-color:#bce8cd;color:#07663a;font-weight:800}
 #place{display:none}.pname{font-size:21px;font-weight:900}.meta{font-size:13px;color:var(--m);margin:4px 0 10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-weight:800;font-size:15px;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
@@ -64,7 +64,7 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 </div>
 <div class="note">📍 校園圖模式：配置接近學校導覽圖，GPS 為近似投影</div>
 <div class="fabs"><button class="fab" id="loc">◎</button><button class="fab on" id="follow">➤</button></div>
-<div class="sheet"><div class="grab"></div><div id="start"><div class="title">萬能校園導航｜校園圖版</div><div class="sub" id="status">尚未取得 GPS 定位</div><div class="quick"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="J">J 育英樓</button><button class="chip" data-find="G">G 管理大樓</button><button class="chip" data-find="I">I 中山堂</button><button class="chip" data-find="RA">RA 行政大樓</button><button class="chip" data-find="RHE">RHE 信義樓</button></div></div><div id="place"><div class="grab"></div><div class="pname" id="pname"></div><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><div class="nav" id="nav"></div></div></div>
+<div class="sheet"><div class="grab"></div><div id="start"><div class="title">萬能校園導航｜校園圖版</div><div class="sub" id="status">尚未取得 GPS 定位</div><div class="quick"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="J">J 育英樓</button><button class="chip" data-find="G">G 管理大樓</button><button class="chip" data-find="I">I 中山堂</button><button class="chip" data-find="RA">RA 行政大樓</button><button class="chip" data-find="RHE">RHE 信義樓</button><button class="chip" data-find="出口">🚪 找出口</button></div></div><div id="place"><div class="grab"></div><div class="pname" id="pname"></div><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><div class="nav" id="nav"></div></div></div>
 </div>
 <script>
 (function(){
@@ -94,7 +94,10 @@ var data=[
 ["Y","航空科技館",289,574,90,46,"#cddd88","教學大樓",24.98885,121.23015,[]],
 ["K02","航空維修訓練中心",290,621,90,80,"#efe18e","實習工廠",24.98867,121.23034,[]],
 ["RHA","忠孝樓",382,621,66,80,"#d8e78c","宿舍",24.98874,121.23114,["宿舍"]],
-["Z","招生中心",452,621,62,80,"#d9ed8d","行政服務",24.98872,121.23152,[]]
+["Z","招生中心",452,621,62,80,"#d9ed8d","行政服務",24.98872,121.23152,[]],
+["EXIT1","前校門",530,590,84,44,"#fff3d6","校門",24.98910,121.23170,["出口","大門","校門","前門"]],
+["EXIT2","後校門",690,128,84,44,"#fff3d6","校門",24.99245,121.23318,["出口","後門","校門"]],
+["EXIT3","萬大路校門",1180,485,112,44,"#fff3d6","校門",24.98970,121.23510,["出口","萬大路","校門"]]
 ].map(function(a){return{code:a[0],name:a[1],x:a[2],y:a[3],w:a[4],h:a[5],fill:a[6],type:a[7],lat:a[8],lng:a[9],aliases:a[10]};});
 var svg=document.getElementById("mapSvg"),g=document.getElementById("buildings"),routeLayer=document.getElementById("routeLayer"),gpsLayer=document.getElementById("gpsLayer"),canvas=document.getElementById("canvas");
 var selected=null,pos=null,watch=null,following=true;
@@ -103,16 +106,16 @@ function render(){
  g.innerHTML="";
  data.forEach(function(p){
    var grp=document.createElementNS("http://www.w3.org/2000/svg","g");
-   var r=document.createElementNS("http://www.w3.org/2000/svg","rect"); r.setAttribute("x",p.x);r.setAttribute("y",p.y);r.setAttribute("width",p.w);r.setAttribute("height",p.h);r.setAttribute("fill",p.fill);r.setAttribute("class","building"+(selected===p?" sel":""));grp.appendChild(r);
-   var t=document.createElementNS("http://www.w3.org/2000/svg","text");t.setAttribute("x",p.x+p.w/2);t.setAttribute("y",p.y+p.h/2-3);t.setAttribute("class","blabel");t.setAttribute("font-size",Math.max(14,Math.min(20,p.w/5)));
+   var r=document.createElementNS("http://www.w3.org/2000/svg","rect"); r.setAttribute("x",p.x);r.setAttribute("y",p.y);r.setAttribute("width",p.w);r.setAttribute("height",p.h);r.setAttribute("rx",p.type==="校門"?"18":"0");r.setAttribute("fill",p.fill);r.setAttribute("class",(p.type==="校門"?"exitMark":"building")+(selected===p?" sel":""));grp.appendChild(r);
+   var t=document.createElementNS("http://www.w3.org/2000/svg","text");t.setAttribute("x",p.x+p.w/2);t.setAttribute("y",p.y+p.h/2-3);t.setAttribute("class",p.type==="校門"?"exitTxt":"blabel");t.setAttribute("font-size",Math.max(14,Math.min(20,p.w/5)));
    var lines=(p.name.length>8?[p.name.slice(0,7),p.name.slice(7)]:[p.name]);
    if(lines.length===1){var a=document.createElementNS("http://www.w3.org/2000/svg","tspan");a.setAttribute("x",p.x+p.w/2);a.setAttribute("dy","0");a.textContent=lines[0];t.appendChild(a);}
    else{lines.forEach(function(line,i){var a=document.createElementNS("http://www.w3.org/2000/svg","tspan");a.setAttribute("x",p.x+p.w/2);a.setAttribute("dy",i===0?"-7":"22");a.textContent=line;t.appendChild(a);});}
-   var c=document.createElementNS("http://www.w3.org/2000/svg","tspan");c.setAttribute("x",p.x+p.w/2);c.setAttribute("dy","22");c.setAttribute("class","bcode");c.textContent=p.code;t.appendChild(c);grp.appendChild(t);
+   if(p.type!=="校門"){var c=document.createElementNS("http://www.w3.org/2000/svg","tspan");c.setAttribute("x",p.x+p.w/2);c.setAttribute("dy","22");c.setAttribute("class","bcode");c.textContent=p.code;t.appendChild(c);}grp.appendChild(t);
    grp.style.cursor="pointer";grp.addEventListener("click",function(){select(p);if(pos){document.getElementById("route").click();}});g.appendChild(grp);
  });
 }
-function display(p){return p.code+" "+p.name}function title(p){return p.name+" "+p.code}function norm(s){return(s||"").toLowerCase().replace(/\s+/g,"")}
+function display(p){return p.type==="校門"?p.name:(p.code+" "+p.name)}function title(p){return p.type==="校門"?p.name:(p.name+" "+p.code)}function norm(s){return(s||"").toLowerCase().replace(/\s+/g,"")}
 function match(p,q){var n=norm(q);return norm(display(p)).indexOf(n)>=0||norm(p.name).indexOf(n)>=0||norm(p.code).indexOf(n)>=0||(p.aliases||[]).some(function(a){return norm(a).indexOf(n)>=0})}
 function distance(a,b){var R=6371000,r=Math.PI/180,dla=(b[0]-a[0])*r,dlo=(b[1]-a[1])*r,la1=a[0]*r,la2=b[0]*r,h=Math.sin(dla/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 function select(p){selected=p;render();document.getElementById("start").style.display="none";document.getElementById("place").style.display="block";document.getElementById("pname").textContent=title(p);document.getElementById("nav").style.display="none";updateMeta();p._el&&p._el.scrollIntoView({behavior:"smooth",block:"center",inline:"center"})}
@@ -122,7 +125,16 @@ function projected(lat,lng){return{x:project.l+(lng-bounds.minLng)/(bounds.maxLn
 document.getElementById("route").onclick=function(){if(!selected)return;var a=pos?projected(pos.lat,pos.lng):{x:760,y:350},b={x:selected.x+selected.w/2,y:selected.y+selected.h/2};routeLayer.innerHTML='<path class="route" d="M '+a.x+" "+a.y+" L "+b.x+" "+b.y+'"/>';var d=distance(pos?[pos.lat,pos.lng]:[24.99085,121.23315],[selected.lat,selected.lng]),n=document.getElementById("nav");n.style.display="block";n.innerHTML="🚶 前往 <b>"+title(selected)+"</b>　約 <b>"+Math.round(d)+" m</b>／<b>"+Math.max(1,Math.ceil(d/75))+" 分鐘</b><br><span style='color:#667085'>藍線是校園示意圖上的近似導引，請依實際道路與入口行走。</span>"};
 var q=document.getElementById("q"),results=document.getElementById("results");
 q.oninput=function(){var s=q.value.trim();if(!s){results.style.display="none";return}var f=data.filter(function(p){return match(p,s)}).slice(0,10);results.innerHTML=f.length?f.map(function(p,i){return'<div class="res" data-i="'+i+'"><b>'+esc(display(p))+'</b><small>'+esc(p.type)+'</small></div>'}).join(""):'<div class="res">找不到校內地點</div>';results.style.display="block";Array.prototype.forEach.call(results.querySelectorAll("[data-i]"),function(el){el.onclick=function(){select(f[Number(el.dataset.i)]);results.style.display="none";q.blur()}})};
-document.querySelectorAll("[data-find]").forEach(function(b){b.onclick=function(){var p=data.find(function(x){return match(x,b.dataset.find)});if(p)select(p)}});
+document.querySelectorAll("[data-find]").forEach(function(b){b.onclick=function(){
+ if(b.dataset.find==="出口"){
+   var f=data.filter(function(x){return x.type==="校門"});
+   results.innerHTML=f.map(function(p,i){return'<div class="res" data-i="'+i+'"><b>🚪 '+esc(display(p))+'</b><small>點一下直接看出口位置</small></div>'}).join("");
+   results.style.display="block";
+   Array.prototype.forEach.call(results.querySelectorAll("[data-i]"),function(el){el.onclick=function(){select(f[Number(el.dataset.i)]);results.style.display="none"}});
+ }else{
+   var p=data.find(function(x){return match(x,b.dataset.find)});if(p)select(p)
+ }
+}});
 document.getElementById("codes").onclick=function(){var f=data.slice().sort(function(a,b){return a.code.localeCompare(b.code)});results.innerHTML=f.map(function(p,i){return'<div class="res" data-i="'+i+'"><b>'+esc(display(p))+'</b><small>'+esc(p.type)+'</small></div>'}).join("");results.style.display="block";Array.prototype.forEach.call(results.querySelectorAll("[data-i]"),function(el){el.onclick=function(){select(f[Number(el.dataset.i)]);results.style.display="none"}})};
 document.getElementById("home").onclick=function(){canvas.scrollTo({left:0,top:0,behavior:"smooth"})};
 function showGps(){document.getElementById("gps").style.display="block"}function hideGps(){document.getElementById("gps").style.display="none"}
