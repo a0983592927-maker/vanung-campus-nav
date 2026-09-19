@@ -20,6 +20,9 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 #place{display:none}.pname{font-size:21px;font-weight:900}.meta{font-size:13px;color:var(--m);margin:4px 0 10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-weight:800;font-size:15px;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
 .gps,.warn{display:none;position:absolute;z-index:25;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 70px);border-radius:15px;box-shadow:var(--sh);padding:12px}.gps{background:#fff}.gps p{font-size:13px;color:var(--m);margin:4px 0 10px}.gps button{width:100%;height:43px;border:0;border-radius:12px;background:var(--b);color:#fff;font-weight:900}.warn{background:#fff6e5;border:1px solid #ffd083;font-size:13px}
 .note{position:absolute;left:12px;bottom:214px;z-index:19;background:rgba(255,255,255,.93);box-shadow:var(--sh);border-radius:13px;padding:7px 10px;font-size:12px;color:#4c5560}
+.timetable{width:min(100%,760px);min-width:690px;margin:18px auto 34px;background:#fff;border-radius:20px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.ttHead{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.ttHeadMain{min-width:0;flex:1}.ttTitle{font-size:22px;font-weight:900}.ttNow{font-size:14px;color:var(--m);margin-top:3px;line-height:1.4}.ttNow.live{color:#c81818;font-weight:900}.ttGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dayCol{min-width:0}.dayTitle{font-size:17px;font-weight:900;padding:8px 10px;border-bottom:2px solid #e5e7eb;margin-bottom:6px}.dayTitle.today{border-color:#d71920;color:#b31319}.classCard{position:relative;display:grid;grid-template-columns:90px 1fr;gap:10px;min-height:72px;padding:9px 10px;margin:6px 0;border:2px solid #e5e7eb;border-radius:14px;background:#fafafa;text-align:left;width:100%}.classCard.current{border:4px solid #e21d2f;background:#fff7f7;box-shadow:0 0 0 3px rgba(226,29,47,.08)}.classTime{font-weight:900;color:#a62b2b;font-size:13px}.className{font-weight:900;font-size:15px;line-height:1.25}.classRoom{font-size:12px;color:#59636f;margin-top:3px}.nowBadge{position:absolute;right:7px;top:6px;background:#e21d2f;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:3px 7px}.ttHint{font-size:12px;color:var(--m);margin-top:10px}
+@media(max-width:720px){.timetable{border-radius:0;margin-top:14px}.ttGrid{gap:8px}.classCard{grid-template-columns:78px 1fr;padding:8px}.className{font-size:14px}.classTime{font-size:12px}}
 </style>
 </head>
 <body>
@@ -44,7 +47,16 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 <text x="1110" y="75" font-size="28" font-weight="900">📍 現在位置</text><text x="1310" y="76" font-size="26" font-weight="900">北</text><polygon points="1282,45 1348,60 1295,76" fill="#222"/>
 <g id="buildings"></g><g id="routeLayer"></g><g id="gpsLayer"></g>
 <text x="1090" y="650" font-size="46" font-weight="900" text-anchor="middle" fill="#111">萬能科技大學</text><text x="1090" y="692" font-size="34" font-weight="700" text-anchor="middle" fill="#222">Vanung University</text>
-</svg></div></div>
+</svg></div>
+<div class="timetable" id="timetable">
+  <div class="ttHead"><div class="ttHeadMain"><div class="ttTitle">本學期課表</div><div class="ttNow" id="ttNow">正在判斷目前課程…</div></div></div>
+  <div class="ttGrid">
+    <div class="dayCol"><div class="dayTitle" id="satTitle">星期六</div><div id="satList"></div></div>
+    <div class="dayCol"><div class="dayTitle" id="sunTitle">星期日</div><div id="sunList"></div></div>
+  </div>
+  <div class="ttHint">點課程可以直接跳到該棟。紅框＝此刻應該上的課。</div>
+</div>
+</div>
 <div class="note">📍 校園圖模式：配置接近學校導覽圖，GPS 為近似投影</div>
 <div class="fabs"><button class="fab" id="loc">◎</button><button class="fab on" id="follow">➤</button></div>
 <div class="sheet"><div class="grab"></div><div id="start"><div class="title">萬能校園導航｜校園圖版</div><div class="sub" id="status">尚未取得 GPS 定位</div><div class="quick"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="J">J 育英樓</button><button class="chip" data-find="G">G 管理大樓</button><button class="chip" data-find="I">I 中山堂</button><button class="chip" data-find="RA">RA 行政大樓</button><button class="chip" data-find="RHE">RHE 信義樓</button></div></div><div id="place"><div class="grab"></div><div class="pname" id="pname"></div><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><div class="nav" id="nav"></div></div></div>
@@ -113,6 +125,62 @@ function setPos(lat,lng,acc){pos={lat:lat,lng:lng,acc:acc};var p=projected(lat,l
 function gpsErr(){var w=document.getElementById("warn");w.style.display="block";w.textContent="⚠️ 無法取得定位。請允許瀏覽器的位置權限並開啟精確位置。";document.getElementById("status").textContent="GPS 尚未啟用";showGps()}
 function startGps(){if(!window.isSecureContext||!navigator.geolocation){gpsErr();return}hideGps();if(watch!==null)navigator.geolocation.clearWatch(watch);watch=navigator.geolocation.watchPosition(function(p){setPos(p.coords.latitude,p.coords.longitude,p.coords.accuracy)},gpsErr,{enableHighAccuracy:true,maximumAge:1500,timeout:15000})}
 document.getElementById("allow").onclick=startGps;document.getElementById("loc").onclick=function(){following=true;document.getElementById("follow").classList.add("on");if(!pos)startGps()};document.getElementById("follow").onclick=function(){following=!following;this.classList.toggle("on",following)};
+var classSchedule={
+ sat:[
+  ["09:10","09:55","AI創新應用","S704","沈柏彤","S"],
+  ["09:55","10:40","AI創新應用","S704","沈柏彤","S"],
+  ["10:50","11:35","低碳旅遊規劃","J302","呂新發","J"],
+  ["11:35","12:20","低碳旅遊規劃","J302","呂新發","J"],
+  ["13:00","13:45","製造工程概論","G406","董景賢","G"],
+  ["13:45","14:30","製造工程概論","G406","董景賢","G"],
+  ["14:40","15:25","專案管理","G406","賴欣鈴","G"],
+  ["15:25","16:10","專案管理","G406","賴欣鈴","G"]
+ ],
+ sun:[
+  ["09:10","09:55","統計學","G406","林鴻欽","G"],
+  ["09:55","10:40","統計學","G406","林鴻欽","G"],
+  ["10:50","11:35","自動化概論","G406","孫中剛","G"],
+  ["11:35","12:20","自動化概論","G406","孫中剛","G"],
+  ["13:00","13:45","生產與作業管理","G406","周富得","G"],
+  ["13:45","14:30","生產與作業管理","G406","周富得","G"],
+  ["14:40","15:25","生產與作業管理","G406","周富得","G"],
+  ["15:25","16:10","計算機應用","G307","莊玉玲","G"]
+ ]
+};
+function toMin(t){var a=t.split(":");return Number(a[0])*60+Number(a[1])}
+function courseButton(item,idx,day,currentIdx){
+ var cur=idx===currentIdx;
+ return '<button class="classCard'+(cur?' current':'')+'" data-code="'+item[5]+'"><div class="classTime">'+item[0]+'–'+item[1]+'</div><div><div class="className">'+esc(item[2])+'</div><div class="classRoom">'+esc(item[3])+' · '+esc(item[4])+'</div></div>'+(cur?'<span class="nowBadge">現在</span>':'')+'</button>';
+}
+function bindCourseClicks(root){
+ Array.prototype.forEach.call(root.querySelectorAll(".classCard"),function(btn){
+  btn.onclick=function(){var p=data.find(function(x){return x.code===btn.dataset.code});if(p){select(p);if(pos)document.getElementById("route").click();}}
+ });
+}
+function withinTerm(d){
+ var y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),n=y*10000+m*100+day;
+ return n>=20260913 && n<=20270116;
+}
+function updateTimetable(){
+ var now=new Date(),dow=now.getDay(),mins=now.getHours()*60+now.getMinutes(),key=dow===6?"sat":dow===0?"sun":null,current=-1,next=-1;
+ if(key&&withinTerm(now)){
+  var arr=classSchedule[key];
+  for(var i=0;i<arr.length;i++){if(mins>=toMin(arr[i][0])&&mins<toMin(arr[i][1])){current=i;break}if(next<0&&mins<toMin(arr[i][0]))next=i}
+ }
+ var sat=document.getElementById("satList"),sun=document.getElementById("sunList");
+ sat.innerHTML=classSchedule.sat.map(function(x,i){return courseButton(x,i,"sat",key==="sat"?current:-1)}).join("");
+ sun.innerHTML=classSchedule.sun.map(function(x,i){return courseButton(x,i,"sun",key==="sun"?current:-1)}).join("");
+ bindCourseClicks(sat);bindCourseClicks(sun);
+ document.getElementById("satTitle").classList.toggle("today",dow===6);
+ document.getElementById("sunTitle").classList.toggle("today",dow===0);
+ var out=document.getElementById("ttNow");out.classList.remove("live");
+ if(!withinTerm(now)){out.textContent="目前不在 2026/09/13～2027/01/16 課程期間";}
+ else if(!key){out.textContent="今天沒有排課";}
+ else if(current>=0){var x=classSchedule[key][current];out.textContent="現在應上："+x[2]+"｜"+x[3]+"｜"+x[0]+"–"+x[1];out.classList.add("live")}
+ else if(next>=0){var n=classSchedule[key][next];out.textContent="目前是休息時間；下一堂 "+n[0]+" "+n[2]+"｜"+n[3]}
+ else{out.textContent="今天課程已結束";}
+}
+updateTimetable();setInterval(updateTimetable,30000);
 render();if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")startGps();else showGps();r.onchange=function(){if(r.state==="granted")startGps()}}).catch(showGps)}else showGps();
 })();
 </script>
