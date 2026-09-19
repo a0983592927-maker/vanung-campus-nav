@@ -20,9 +20,10 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 #place{display:none}.pname{font-size:21px;font-weight:900}.meta{font-size:13px;color:var(--m);margin:4px 0 10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-weight:800;font-size:15px;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
 .gps,.warn{display:none;position:absolute;z-index:25;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 70px);border-radius:15px;box-shadow:var(--sh);padding:12px}.gps{background:#fff}.gps p{font-size:13px;color:var(--m);margin:4px 0 10px}.gps button{width:100%;height:43px;border:0;border-radius:12px;background:var(--b);color:#fff;font-weight:900}.warn{background:#fff6e5;border:1px solid #ffd083;font-size:13px}
 .note{position:absolute;left:12px;bottom:214px;z-index:19;background:rgba(255,255,255,.93);box-shadow:var(--sh);border-radius:13px;padding:7px 10px;font-size:12px;color:#4c5560}
-.timetable{width:min(100%,760px);min-width:690px;margin:18px auto 34px;background:#fff;border-radius:20px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.ttHead{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.ttHeadMain{min-width:0;flex:1}.ttTitle{font-size:22px;font-weight:900}.ttNow{font-size:14px;color:var(--m);margin-top:3px;line-height:1.4}.ttNow.live{color:#c81818;font-weight:900}.ttGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dayCol{min-width:0}.dayTitle{font-size:17px;font-weight:900;padding:8px 10px;border-bottom:2px solid #e5e7eb;margin-bottom:6px}.dayTitle.today{border-color:#d71920;color:#b31319}.classCard{position:relative;display:grid;grid-template-columns:90px 1fr;gap:10px;min-height:72px;padding:9px 10px;margin:6px 0;border:2px solid #e5e7eb;border-radius:14px;background:#fafafa;text-align:left;width:100%}.classCard.current{border:4px solid #e21d2f;background:#fff7f7;box-shadow:0 0 0 3px rgba(226,29,47,.08)}.classTime{font-weight:900;color:#a62b2b;font-size:13px}.className{font-weight:900;font-size:15px;line-height:1.25}.classRoom{font-size:12px;color:#59636f;margin-top:3px}.nowBadge{position:absolute;right:7px;top:6px;background:#e21d2f;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:3px 7px}.ttHint{font-size:12px;color:var(--m);margin-top:10px}
-@media(max-width:720px){.timetable{border-radius:0;margin-top:14px}.ttGrid{gap:8px}.classCard{grid-template-columns:78px 1fr;padding:8px}.className{font-size:14px}.classTime{font-size:12px}}
+.timetable{width:min(100%,760px);min-width:690px;margin:10px auto 20px;background:#fff;border-radius:16px;padding:9px 10px;box-shadow:0 6px 16px rgba(0,0,0,.07)}
+.ttBar{display:flex;align-items:center;gap:8px;margin-bottom:7px}.ttTitle{font-size:15px;font-weight:900;white-space:nowrap}.ttNow{min-width:0;flex:1;font-size:12px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ttNow.live{color:#c81818;font-weight:900}.ttTabs{display:flex;gap:4px}.ttTab{height:30px;min-width:34px;border:0;border-radius:9px;background:#eef1f4;color:#465160;font-weight:900}.ttTab.active{background:#e7f5ec;color:#087a45}.ttTab.today{box-shadow:inset 0 0 0 2px #e12525;color:#b31b1b}
+.ttStrip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.ttStrip::-webkit-scrollbar{display:none}.classCard{position:relative;flex:0 0 122px;min-height:62px;padding:6px 7px;border:1px solid #e4e7eb;border-radius:11px;background:#fafafa;text-align:left}.classCard.current{border:3px solid #e12525;background:#fff5f5;box-shadow:0 0 0 2px rgba(225,37,37,.08)}.classTime{font-weight:900;color:#69727e;font-size:10.5px;line-height:1.1}.className{font-weight:900;font-size:12.5px;line-height:1.15;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.classRoom{font-size:10.5px;color:#6b7280;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nowBadge{position:absolute;right:4px;top:4px;background:#e12525;color:#fff;font-size:9px;font-weight:900;border-radius:999px;padding:2px 5px}.ttHint{font-size:10.5px;color:var(--m);margin-top:6px}
+@media(max-width:720px){.timetable{margin-top:8px;padding:8px;border-radius:14px}.classCard{flex-basis:112px}.ttTitle{font-size:14px}.ttNow{font-size:11px}}
 </style>
 </head>
 <body>
@@ -49,12 +50,16 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 <text x="1090" y="650" font-size="46" font-weight="900" text-anchor="middle" fill="#111">萬能科技大學</text><text x="1090" y="692" font-size="34" font-weight="700" text-anchor="middle" fill="#222">Vanung University</text>
 </svg></div>
 <div class="timetable" id="timetable">
-  <div class="ttHead"><div class="ttHeadMain"><div class="ttTitle">本學期課表</div><div class="ttNow" id="ttNow">正在判斷目前課程…</div></div></div>
-  <div class="ttGrid">
-    <div class="dayCol"><div class="dayTitle" id="satTitle">星期六</div><div id="satList"></div></div>
-    <div class="dayCol"><div class="dayTitle" id="sunTitle">星期日</div><div id="sunList"></div></div>
+  <div class="ttBar">
+    <div class="ttTitle">課表</div>
+    <div class="ttNow" id="ttNow">正在判斷目前課程…</div>
+    <div class="ttTabs">
+      <button class="ttTab" id="tabSat" data-day="sat">六</button>
+      <button class="ttTab" id="tabSun" data-day="sun">日</button>
+    </div>
   </div>
-  <div class="ttHint">點課程可以直接跳到該棟。紅框＝此刻應該上的課。</div>
+  <div class="ttStrip" id="ttStrip"></div>
+  <div class="ttHint">點課程＝跳到該棟；紅框＝現在這堂。</div>
 </div>
 </div>
 <div class="note">📍 校園圖模式：配置接近學校導覽圖，GPS 為近似投影</div>
@@ -148,9 +153,10 @@ var classSchedule={
  ]
 };
 function toMin(t){var a=t.split(":");return Number(a[0])*60+Number(a[1])}
-function courseButton(item,idx,day,currentIdx){
+var ttSelectedDay=(new Date().getDay()===0)?"sun":"sat";
+function courseButton(item,idx,currentIdx){
  var cur=idx===currentIdx;
- return '<button class="classCard'+(cur?' current':'')+'" data-code="'+item[5]+'"><div class="classTime">'+item[0]+'–'+item[1]+'</div><div><div class="className">'+esc(item[2])+'</div><div class="classRoom">'+esc(item[3])+' · '+esc(item[4])+'</div></div>'+(cur?'<span class="nowBadge">現在</span>':'')+'</button>';
+ return '<button class="classCard'+(cur?' current':'')+'" data-code="'+item[5]+'"><div class="classTime">'+item[0]+'–'+item[1]+'</div><div class="className">'+esc(item[2])+'</div><div class="classRoom">'+esc(item[3])+' · '+esc(item[4])+'</div>'+(cur?'<span class="nowBadge">現在</span>':'')+'</button>';
 }
 function bindCourseClicks(root){
  Array.prototype.forEach.call(root.querySelectorAll(".classCard"),function(btn){
@@ -162,24 +168,27 @@ function withinTerm(d){
  return n>=20260913 && n<=20270116;
 }
 function updateTimetable(){
- var now=new Date(),dow=now.getDay(),mins=now.getHours()*60+now.getMinutes(),key=dow===6?"sat":dow===0?"sun":null,current=-1,next=-1;
- if(key&&withinTerm(now)){
-  var arr=classSchedule[key];
+ var now=new Date(),dow=now.getDay(),mins=now.getHours()*60+now.getMinutes(),todayKey=dow===6?"sat":dow===0?"sun":null,current=-1,next=-1;
+ if(todayKey&&withinTerm(now)){
+  var arr=classSchedule[todayKey];
   for(var i=0;i<arr.length;i++){if(mins>=toMin(arr[i][0])&&mins<toMin(arr[i][1])){current=i;break}if(next<0&&mins<toMin(arr[i][0]))next=i}
  }
- var sat=document.getElementById("satList"),sun=document.getElementById("sunList");
- sat.innerHTML=classSchedule.sat.map(function(x,i){return courseButton(x,i,"sat",key==="sat"?current:-1)}).join("");
- sun.innerHTML=classSchedule.sun.map(function(x,i){return courseButton(x,i,"sun",key==="sun"?current:-1)}).join("");
- bindCourseClicks(sat);bindCourseClicks(sun);
- document.getElementById("satTitle").classList.toggle("today",dow===6);
- document.getElementById("sunTitle").classList.toggle("today",dow===0);
+ if(todayKey)ttSelectedDay=todayKey;
+ var list=document.getElementById("ttStrip"),shown=classSchedule[ttSelectedDay];
+ list.innerHTML=shown.map(function(x,i){return courseButton(x,i,(ttSelectedDay===todayKey)?current:-1)}).join("");
+ bindCourseClicks(list);
+ var sat=document.getElementById("tabSat"),sun=document.getElementById("tabSun");
+ sat.classList.toggle("active",ttSelectedDay==="sat");sun.classList.toggle("active",ttSelectedDay==="sun");
+ sat.classList.toggle("today",dow===6);sun.classList.toggle("today",dow===0);
  var out=document.getElementById("ttNow");out.classList.remove("live");
- if(!withinTerm(now)){out.textContent="目前不在 2026/09/13～2027/01/16 課程期間";}
- else if(!key){out.textContent="今天沒有排課";}
- else if(current>=0){var x=classSchedule[key][current];out.textContent="現在應上："+x[2]+"｜"+x[3]+"｜"+x[0]+"–"+x[1];out.classList.add("live")}
- else if(next>=0){var n=classSchedule[key][next];out.textContent="目前是休息時間；下一堂 "+n[0]+" "+n[2]+"｜"+n[3]}
+ if(!withinTerm(now)){out.textContent="非上課期間";}
+ else if(!todayKey){out.textContent="今天沒有排課";}
+ else if(current>=0){var x=classSchedule[todayKey][current];out.textContent="現在："+x[2]+" · "+x[3];out.classList.add("live")}
+ else if(next>=0){var n=classSchedule[todayKey][next];out.textContent="下一堂 "+n[0]+" "+n[2]+" · "+n[3]}
  else{out.textContent="今天課程已結束";}
 }
+document.getElementById("tabSat").onclick=function(){ttSelectedDay="sat";updateTimetable()};
+document.getElementById("tabSun").onclick=function(){ttSelectedDay="sun";updateTimetable()};
 updateTimetable();setInterval(updateTimetable,30000);
 render();if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")startGps();else showGps();r.onchange=function(){if(r.state==="granted")startGps()}}).catch(showGps)}else showGps();
 })();
