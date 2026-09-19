@@ -92,7 +92,7 @@ function render(){
    if(lines.length===1){var a=document.createElementNS("http://www.w3.org/2000/svg","tspan");a.setAttribute("x",p.x+p.w/2);a.setAttribute("dy","0");a.textContent=lines[0];t.appendChild(a);}
    else{lines.forEach(function(line,i){var a=document.createElementNS("http://www.w3.org/2000/svg","tspan");a.setAttribute("x",p.x+p.w/2);a.setAttribute("dy",i===0?"-7":"22");a.textContent=line;t.appendChild(a);});}
    var c=document.createElementNS("http://www.w3.org/2000/svg","tspan");c.setAttribute("x",p.x+p.w/2);c.setAttribute("dy","22");c.setAttribute("class","bcode");c.textContent=p.code;t.appendChild(c);grp.appendChild(t);
-   grp.style.cursor="pointer";grp.addEventListener("click",function(){select(p);});g.appendChild(grp);
+   grp.style.cursor="pointer";grp.addEventListener("click",function(){select(p);if(pos){document.getElementById("route").click();}});g.appendChild(grp);
  });
 }
 function display(p){return p.code+" "+p.name}function title(p){return p.name+" "+p.code}function norm(s){return(s||"").toLowerCase().replace(/\s+/g,"")}
