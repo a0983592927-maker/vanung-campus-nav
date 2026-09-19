@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#087a45">
+<title>萬能校園導航</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--g:#087a45;--b:#1677ff;--t:#17212b;--s:0 8px 28px rgba(16,24,40,.16)}
+*{box-sizing:border-box}html,body,#map{margin:0;width:100%;height:100%;font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;color:var(--t)}
+#map{position:fixed;inset:0}.top{position:fixed;z-index:1000;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 10px);display:flex;gap:8px}
+.logo{width:48px;height:48px;border-radius:15px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:900;box-shadow:var(--s)}
+.search{height:48px;flex:1;background:#fff;border-radius:15px;display:flex;align-items:center;gap:8px;padding:0 13px;box-shadow:var(--s)}
+.search input{border:0;outline:0;width:100%;font-size:16px;background:transparent}
+.round{width:48px;height:48px;border:0;border-radius:15px;background:#fff;box-shadow:var(--s);font-size:21px}
+.results{display:none;position:fixed;z-index:1200;left:68px;right:68px;top:calc(env(safe-area-inset-top) + 67px);background:#fff;border-radius:14px;box-shadow:var(--s);max-height:43vh;overflow:auto}
+.res{padding:12px 14px;border-bottom:1px solid #eee}.res b{display:block}.res small{color:#667085}
+.fabs{position:fixed;z-index:1000;right:12px;bottom:215px;display:grid;gap:10px}.fab{width:52px;height:52px;border:0;border-radius:17px;background:#fff;box-shadow:var(--s);font-size:23px}.fab.on{color:var(--b);background:#edf4ff}
+.sheet{position:fixed;z-index:1000;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 10px);background:rgba(255,255,255,.97);border-radius:24px;box-shadow:var(--s);padding:13px}
+.grab{width:40px;height:4px;border-radius:99px;background:#d5d9de;margin:0 auto 10px}.title{font-size:19px;font-weight:900}.sub{font-size:13px;color:#667085;margin-top:3px}.chips{display:flex;gap:8px;overflow:auto;padding-top:11px}.chip{white-space:nowrap;border:1px solid #e1e6ea;background:#fff;border-radius:999px;padding:9px 12px}.chip.main{background:#ebf8f0;border-color:#a8dfbe;color:#06683a;font-weight:800}
+.place{display:none}.place h2{font-size:20px;margin:0 0 4px}.meta{color:#667085;font-size:13px;margin-bottom:10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-size:15px;font-weight:800;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
+.warn,.gps{display:none;position:fixed;z-index:1250;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 72px);border-radius:15px;box-shadow:var(--s);padding:12px}.warn{background:#fff6e5;border:1px solid #ffd083}.gps{background:#fff}.gps b{font-size:16px}.gps p{font-size:13px;color:#667085;margin:4px 0 10px}.gps button{width:100%;height:43px;border:0;border-radius:12px;background:var(--b);color:#fff;font-weight:900}
+.codesBg{display:none;position:fixed;z-index:1300;inset:0;background:rgba(15,23,42,.28);backdrop-filter:blur(3px)}.codes{position:absolute;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 10px);background:#fff;border-radius:24px;padding:14px;max-height:75vh;overflow:auto}.codeHead{display:flex;align-items:center}.codeHead b{font-size:20px;flex:1}.close{border:0;width:38px;height:38px;border-radius:11px;font-size:22px}.hint{font-size:13px;color:#667085;margin:5px 0 12px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.code{min-height:58px;border:1px solid #dfe5ea;border-radius:15px;background:#fff;font-size:19px;font-weight:900}.code small{display:block;font-size:10px;color:#667085;font-weight:600;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.poi{background:#fff;border:2px solid var(--g);border-radius:12px;padding:3px 7px;color:#075c36;font-weight:900;white-space:nowrap;font-size:11px;box-shadow:0 3px 10px rgba(0,0,0,.16)}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--b);border:4px solid #fff;box-shadow:0 0 0 8px rgba(22,119,255,.18),0 2px 8px rgba(0,0,0,.3)}
+.leaflet-control-zoom{display:none}.leaflet-control-attribution{font-size:9px!important}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="top">
+ <div class="logo">萬</div>
+ <div class="search"><span>🔎</span><input id="q" placeholder="搜尋大樓、英文棟號、餐廳…"></div>
+ <button class="round" id="home">🏫</button>
+</div>
+<div class="results" id="results"></div>
+<div class="gps" id="gps"><b>開啟我的位置</b><p>允許定位後，地圖會顯示你的藍色位置點，走動時會跟著更新。</p><button id="allow">允許 GPS 定位</button></div>
+<div class="warn" id="warn"></div>
+<div class="fabs">
+ <button class="fab" id="loc">◎</button>
+ <button class="fab on" id="follow">➤</button>
+</div>
+<div class="codesBg" id="codesBg">
+ <div class="codes"><div class="grab"></div><div class="codeHead"><b>英文棟號</b><button class="close" id="close">×</button></div><div class="hint">課表寫哪個英文代號，直接按一下就跳到那棟。</div><div class="grid" id="grid"></div></div>
+</div>
+<div class="sheet">
+ <div id="start">
+  <div class="grab"></div><div class="title">萬能校園導航</div><div class="sub" id="status">尚未取得 GPS 定位</div>
+  <div class="chips"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="中山堂">中山堂</button><button class="chip" data-find="行政大樓">行政大樓</button><button class="chip" data-find="餐飲大樓">餐飲大樓</button><button class="chip" data-find="南校門">南校門</button></div>
+ </div>
+ <div class="place" id="place"><div class="grab"></div><h2 id="pname"></h2><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><div class="nav" id="nav"></div></div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+var center=[24.99085,121.23315];
+var bounds=L.latLngBounds([24.9880,121.2297],[24.9931,121.2362]);
+var places=[
+{name:"北校門",code:"北門",lat:24.99245,lng:121.23318,type:"校門"},
+{name:"南校門",code:"南門",lat:24.98905,lng:121.23178,type:"校門"},
+{name:"新能源大樓 RHD",code:"RHD",lat:24.99250,lng:121.23180,type:"教學/研究"},
+{name:"遠東樓 H",code:"H",lat:24.99170,lng:121.23025,type:"教學大樓"},
+{name:"萬能樓 I",code:"I",lat:24.99172,lng:121.23118,type:"教學大樓"},
+{name:"B棟",code:"B",lat:24.99082,lng:121.23082,type:"教學大樓"},
+{name:"商學樓 E",code:"E",lat:24.99172,lng:121.23210,type:"教學大樓"},
+{name:"景觀餐廳 F",code:"F",lat:24.99155,lng:121.23248,type:"餐飲"},
+{name:"行政大樓 L",code:"L",lat:24.99162,lng:121.23293,type:"行政/服務"},
+{name:"中山堂 活動中心 S",code:"S",lat:24.99168,lng:121.23355,type:"活動中心"},
+{name:"航空暨旅館大樓 T",code:"T",lat:24.99168,lng:121.23418,type:"教學大樓"},
+{name:"資訊大樓 RHE",code:"RHE",lat:24.99167,lng:121.23482,type:"教學/研究"},
+{name:"運動休閒園區 PH",code:"PH",lat:24.99130,lng:121.23545,type:"運動休閒"},
+{name:"存廬紀念圖書資訊館 M",code:"M",lat:24.99104,lng:121.23028,type:"圖書館"},
+{name:"工業管理大樓 RA",code:"RA",lat:24.99078,lng:121.23136,type:"教學大樓"},
+{name:"航空大樓 A",code:"A",lat:24.99075,lng:121.23202,type:"教學大樓"},
+{name:"觀餐大樓 G",code:"G",lat:24.99078,lng:121.23252,type:"教學大樓"},
+{name:"餐飲大樓／萬芳樓 J",code:"J",lat:24.99122,lng:121.23415,type:"餐飲/教學"},
+{name:"民生樓 C",code:"C",lat:24.99072,lng:121.23462,type:"教學大樓"},
+{name:"弘道館",code:"T2",lat:24.99050,lng:121.23032,type:"教學大樓"},
+{name:"設計大樓 D",code:"D",lat:24.98998,lng:121.23255,type:"教學大樓"},
+{name:"化工與材料工程館 K",code:"K",lat:24.99042,lng:121.23350,type:"研究/實驗"},
+{name:"電資館 N",code:"N",lat:24.98998,lng:121.23318,type:"研究/實驗"},
+{name:"機械工程館 U",code:"U",lat:24.98998,lng:121.23372,type:"研究/實驗"},
+{name:"創意設計大樓 RHB",code:"RHB",lat:24.98998,lng:121.23425,type:"教學大樓"},
+{name:"萬能會館 V",code:"V",lat:24.98990,lng:121.23513,type:"宿舍/餐飲"},
+{name:"宿舍 RHA",code:"RHA",lat:24.98860,lng:121.23118,type:"宿舍"},
+{name:"航空暨工程館 K02",code:"K02",lat:24.98865,lng:121.23035,type:"研究/實驗"},
+{name:"便利商店",code:"商店",lat:24.98975,lng:121.23132,type:"生活服務"},
+{name:"萬能站",code:"公車",lat:24.98873,lng:121.23205,type:"交通"}];
+var map=L.map("map",{zoomControl:false}).setView(center,18);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,attribution:"&copy; OpenStreetMap"}).addTo(map);
+L.rectangle(bounds,{color:"#0b8f53",weight:2,fillOpacity:.03,dashArray:"6,6"}).addTo(map);
+function label(p){return L.divIcon({className:"",html:'<div class="poi">'+p.name.replace(/ .*/,"")+'</div>',iconSize:null});}
+places.forEach(function(p){L.marker([p.lat,p.lng],{icon:label(p)}).addTo(map).on("click",function(){select(p,true);});});
+var selected=null,line=null,pos=null,marker=null,accuracy=null,following=true,watch=null;
+function meters(a,b){var R=6371000,r=Math.PI/180,dla=(b[0]-a[0])*r,dlo=(b[1]-a[1])*r,la1=a[0]*r,la2=b[0]*r;var h=Math.sin(dla/2)*Math.sin(dla/2)+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)*Math.sin(dlo/2);return 2*R*Math.asin(Math.sqrt(h));}
+function select(p,z){selected=p;document.getElementById("start").style.display="none";document.getElementById("place").style.display="block";document.getElementById("pname").textContent=p.name;updateMeta();document.getElementById("nav").style.display="none";if(z)map.setView([p.lat,p.lng],19,{animate:true});}
+function updateMeta(){if(!selected)return;var a=pos?[pos.lat,pos.lng]:center,d=meters(a,[selected.lat,selected.lng]);document.getElementById("meta").textContent=selected.type+" · 約 "+Math.round(d)+" 公尺 · 步行約 "+Math.max(1,Math.ceil(d/75))+" 分鐘";}
+document.getElementById("back").onclick=function(){selected=null;document.getElementById("place").style.display="none";document.getElementById("start").style.display="block";if(line){map.removeLayer(line);line=null;}};
+document.getElementById("route").onclick=function(){if(!selected)return;var a=pos?[pos.lat,pos.lng]:center;if(line)map.removeLayer(line);line=L.polyline([a,[selected.lat,selected.lng]],{color:"#1677ff",weight:7,opacity:.9}).addTo(map);map.fitBounds(line.getBounds().pad(.35));var d=meters(a,[selected.lat,selected.lng]),n=document.getElementById("nav");n.style.display="block";n.innerHTML="🚶 前往 <b>"+selected.name+"</b>　約 <b>"+Math.round(d)+" m</b>／<b>"+Math.max(1,Math.ceil(d/75))+" 分鐘</b><br><span style='color:#667085'>藍線目前為校內直線導引；請依道路與建築出入口行走。</span>";};
+var q=document.getElementById("q"),results=document.getElementById("results");
+function match(p,s){s=s.toLowerCase().replace(/s/g,"");return p.name.toLowerCase().replace(/s/g,"").indexOf(s)>=0||p.code.toLowerCase()===s;}
+q.oninput=function(){var s=q.value.trim();if(!s){results.style.display="none";return;}var f=places.filter(function(p){return match(p,s);}).slice(0,8);results.innerHTML=f.length?f.map(function(p,i){return '<div class="res" data-i="'+i+'"><b>'+p.name+'</b><small>'+p.type+'</small></div>';}).join(""):'<div class="res">找不到校內地點</div>';results.style.display="block";Array.prototype.forEach.call(results.querySelectorAll("[data-i]"),function(el){el.onclick=function(){select(f[Number(el.getAttribute("data-i"))],true);results.style.display="none";q.blur();};});};
+document.querySelectorAll("[data-find]").forEach(function(b){b.onclick=function(){var p=places.find(function(x){return x.name.indexOf(b.getAttribute("data-find"))>=0;});if(p)select(p,true);};});
+var order=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","PH","RA","RHA","RHB","RHD","RHE","S","T","U","V","K02"];
+var grid=document.getElementById("grid");grid.innerHTML=order.map(function(c){var p=places.find(function(x){return x.code===c;});return p?'<button class="code" data-code="'+c+'">'+c+'<small>'+p.name+'</small></button>':"";}).join("");
+grid.querySelectorAll("[data-code]").forEach(function(b){b.onclick=function(){var p=places.find(function(x){return x.code===b.getAttribute("data-code");});document.getElementById("codesBg").style.display="none";select(p,true);};});
+document.getElementById("codes").onclick=function(){document.getElementById("codesBg").style.display="block";};
+document.getElementById("close").onclick=function(){document.getElementById("codesBg").style.display="none";};
+document.getElementById("home").onclick=function(){following=false;document.getElementById("follow").classList.remove("on");map.fitBounds(bounds,{padding:[25,25]});};
+function showGps(){document.getElementById("gps").style.display="block";}function hideGps(){document.getElementById("gps").style.display="none";}
+function setPos(lat,lng,acc){pos={lat:lat,lng:lng};var ll=[lat,lng];if(!marker){marker=L.marker(ll,{icon:L.divIcon({className:"",html:'<div class="dot"></div>',iconSize:[22,22],iconAnchor:[11,11]}),zIndexOffset:9999}).addTo(map);accuracy=L.circle(ll,{radius:acc||15,color:"#1677ff",weight:1,fillColor:"#1677ff",fillOpacity:.08}).addTo(map);}else{marker.setLatLng(ll);accuracy.setLatLng(ll).setRadius(acc||15);}document.getElementById("status").textContent="GPS 已定位 · 精度約 ±"+Math.round(acc||0)+"m";document.getElementById("warn").style.display="none";hideGps();if(following)map.setView(ll,19);updateMeta();}
+function gpsErr(e){var w=document.getElementById("warn");w.style.display="block";w.textContent="⚠️ 無法取得定位。請允許瀏覽器的位置權限，並開啟精確位置。";document.getElementById("status").textContent="GPS 尚未啟用";showGps();}
+function startGps(){if(!window.isSecureContext){var w=document.getElementById("warn");w.style.display="block";w.textContent="⚠️ 必須使用 HTTPS 才能啟用 GPS。";return;}hideGps();if(watch!==null)navigator.geolocation.clearWatch(watch);watch=navigator.geolocation.watchPosition(function(p){setPos(p.coords.latitude,p.coords.longitude,p.coords.accuracy);},gpsErr,{enableHighAccuracy:true,maximumAge:1000,timeout:15000});}
+document.getElementById("allow").onclick=startGps;
+document.getElementById("loc").onclick=function(){following=true;document.getElementById("follow").classList.add("on");if(pos)map.setView([pos.lat,pos.lng],19);else startGps();};
+document.getElementById("follow").onclick=function(){following=!following;this.classList.toggle("on",following);if(following&&pos)map.setView([pos.lat,pos.lng],19);};
+map.on("dragstart",function(){following=false;document.getElementById("follow").classList.remove("on");});
+map.fitBounds(bounds,{padding:[20,20]});
+if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")startGps();else showGps();r.onchange=function(){if(r.state==="granted")startGps();};}).catch(showGps);}else showGps();
+})();
+</script>
+</body>
+</html>
