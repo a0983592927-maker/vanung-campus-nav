@@ -46,7 +46,18 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 <text x="1292" y="155" font-size="20" font-weight="900">運動休閒園區</text>
 <text x="735" y="232" font-size="20" font-weight="900" transform="rotate(90 735 232)">往中壢萬大路</text>
 <text x="1310" y="76" font-size="26" font-weight="900">北</text><polygon points="1282,45 1348,60 1295,76" fill="#222"/>
-<g id="buildings"></g><g id="routeLayer"></g><g id="calibLayer"></g><g id="gpsLayer"></g>
+<g id="buildings"></g>
+<g id="heliLandmark" pointer-events="none" transform="translate(597 322)">
+  <line x1="0" y1="0" x2="42" y2="0" stroke="#17324a" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="21" y1="0" x2="21" y2="8" stroke="#17324a" stroke-width="3"/>
+  <path d="M8 17 C8 10,16 7,26 8 C34 9,39 13,39 18 C39 24,32 27,23 27 L13 27 C8 27,5 23,5 20 C5 18,6 17,8 17 Z" fill="#d9ecff" stroke="#17324a" stroke-width="3"/>
+  <path d="M8 18 L-5 18 L-11 13" fill="none" stroke="#17324a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M29 10 L35 4" fill="none" stroke="#17324a" stroke-width="3" stroke-linecap="round"/>
+  <rect x="15" y="12" width="8" height="7" rx="1.5" fill="#76b6e8"/>
+  <path d="M12 31 H32 M15 27 L12 31 M29 27 L32 31" fill="none" stroke="#17324a" stroke-width="3" stroke-linecap="round"/>
+  <text x="17" y="46" font-size="13" font-weight="900" fill="#17324a" text-anchor="middle">直升機</text>
+</g>
+<g id="routeLayer"></g><g id="calibLayer"></g><g id="gpsLayer"></g>
 <text x="1090" y="650" font-size="46" font-weight="900" text-anchor="middle" fill="#111">萬能科技大學</text><text x="1090" y="692" font-size="34" font-weight="700" text-anchor="middle" fill="#222">Vanung University</text>
 </svg></div>
 <div class="timetable" id="timetable">
@@ -84,7 +95,7 @@ var data=[
 ["B","B棟",380,286,54,187,"#ddd3e8","教學大樓",24.99077,121.23108,[]],
 ["RA","行政大樓",437,286,88,125,"#84c337","行政大樓",24.99063,121.23152,["工業管理大樓"]],
 ["A","妝品大樓",526,286,67,154,"#f1e48e","教學大樓",24.99062,121.23204,["航空大樓"]],
-["G","管理大樓",595,286,136,161,"#ebcfc4","教學大樓",24.99070,121.23272,["觀餐大樓"]],
+["G","管理大樓",640,300,92,140,"#ebcfc4","教學大樓",24.99070,121.23272,["觀餐大樓"]],
 ["N","萬能車輛實習保養廠",752,335,85,144,"#80c02e","實習工廠",24.99002,121.23318,["電資館"]],
 ["RHB","仁愛樓",879,334,120,145,"#dae694","宿舍",24.99002,121.23424,["創意設計大樓"]],
 ["L","育才樓",1000,334,80,145,"#d9cfe6","教學大樓",24.99000,121.23495,[]],
@@ -123,6 +134,13 @@ function updateMeta(){if(!selected)return;var a=pos?[pos.lat,pos.lng]:[24.99085,
 document.getElementById("back").onclick=function(){selected=null;render();routeLayer.innerHTML="";document.getElementById("place").style.display="none";document.getElementById("start").style.display="block"};
 var calibPoints=[];
 try{calibPoints=JSON.parse(localStorage.getItem("vnuGpsCalib")||"[]")}catch(e){calibPoints=[]}
+try{
+ if(localStorage.getItem("vnuLayoutHeli1")!=="1"){
+  calibPoints.forEach(function(a){if(a.code==="G"){a.dx+=23;a.dy+=3}});
+  localStorage.setItem("vnuGpsCalib",JSON.stringify(calibPoints));
+  localStorage.setItem("vnuLayoutHeli1","1");
+ }
+}catch(e){}
 function rawProjected(lat,lng){
  return{
   x:167862.08682548*(lng-121.233)-780.03109671*(lat-24.9905)+746.13510045,
