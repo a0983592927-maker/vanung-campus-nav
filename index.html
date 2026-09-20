@@ -17,7 +17,7 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
 .building{stroke:#8a8f93;stroke-width:1.2;cursor:pointer}.building.sel{stroke:#1677ff;stroke-width:6}.blabel{font-weight:800;fill:#222;text-anchor:middle;pointer-events:none}.bcode{font-weight:900}.road{fill:#dedede}.stream{fill:#6faed4}.walk{fill:#f4eb20}.campusBorder{fill:none;stroke:#333;stroke-width:2;stroke-dasharray:18 18}.poiText{font-size:18px;font-weight:800;fill:#30343a;text-anchor:middle}.route{stroke:#1677ff;stroke-width:9;stroke-linecap:round;fill:none}.gpsAcc{fill:rgba(22,119,255,.13);stroke:rgba(22,119,255,.35);stroke-width:2}.gpsDot{fill:#1677ff;stroke:#fff;stroke-width:6}.exitMark{fill:#fff;stroke:#d97706;stroke-width:4}.exitTxt{font-size:18px;font-weight:900;fill:#9a4b00;text-anchor:middle;pointer-events:none}
 .fabs{position:absolute;right:12px;bottom:214px;z-index:20;display:grid;gap:10px}.fab{width:54px;height:54px;border:0;border-radius:18px;background:#fff;box-shadow:var(--sh);font-size:22px}.fab.on{background:#edf4ff;color:var(--b)}
 .sheet{position:absolute;z-index:20;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 10px);background:var(--card);border-radius:24px;box-shadow:var(--sh);padding:12px}.grab{width:40px;height:4px;background:#d9dde3;border-radius:99px;margin:0 auto 8px}.title{font-size:18px;font-weight:900}.sub{font-size:12px;color:var(--m);margin-top:4px}.quick{display:flex;gap:8px;overflow:auto;padding-top:10px}.chip{flex:0 0 auto;border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:9px 12px;font-size:14px}.chip.main{background:#e9f8ef;border-color:#bce8cd;color:#07663a;font-weight:800}
-#place{display:none}.pname{font-size:21px;font-weight:900}.meta{font-size:13px;color:var(--m);margin:4px 0 10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-weight:800;font-size:15px;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
+#place{display:none}.pname{font-size:21px;font-weight:900}.meta{font-size:13px;color:var(--m);margin:4px 0 10px}.row{display:flex;gap:8px}.btn{height:44px;border:0;border-radius:13px;font-weight:800;font-size:15px;flex:1}.back{background:#eef1f4}.go{background:var(--b);color:#fff}.calBtn{width:100%;height:40px;margin-top:8px;border:1px solid #b8d7ff;border-radius:12px;background:#edf5ff;color:#1255bd;font-weight:900;font-size:14px}.nav{display:none;margin-top:9px;background:#edf5ff;border-radius:13px;padding:10px 12px;font-size:14px;line-height:1.45}
 .gps,.warn{display:none;position:absolute;z-index:25;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 70px);border-radius:15px;box-shadow:var(--sh);padding:12px}.gps{background:#fff}.gps p{font-size:13px;color:var(--m);margin:4px 0 10px}.gps button{width:100%;height:43px;border:0;border-radius:12px;background:var(--b);color:#fff;font-weight:900}.warn{background:#fff6e5;border:1px solid #ffd083;font-size:13px}
 .note{position:absolute;left:12px;bottom:214px;z-index:19;background:rgba(255,255,255,.93);box-shadow:var(--sh);border-radius:13px;padding:7px 10px;font-size:12px;color:#4c5560}
 .timetable{width:min(100%,760px);min-width:690px;margin:10px auto 20px;background:#fff;border-radius:16px;padding:9px 10px;box-shadow:0 6px 16px rgba(0,0,0,.07)}
@@ -62,9 +62,9 @@ svg{display:block;width:100%;height:auto;touch-action:manipulation}
   <div class="ttHint">點課程＝跳到該棟；紅框＝現在這堂。</div>
 </div>
 </div>
-<div class="note">🔵 GPS 已重新校正；進入建築附近會自動貼齊該棟</div>
+<div class="note">🎯 定位可手動校正：人在某棟時點該棟，再按「我就在這棟」</div>
 <div class="fabs"><button class="fab" id="loc">◎</button><button class="fab on" id="follow">➤</button></div>
-<div class="sheet"><div class="grab"></div><div id="start"><div class="title">萬能校園導航｜校園圖版</div><div class="sub" id="status">尚未取得 GPS 定位</div><div class="quick"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="J">J 育英樓</button><button class="chip" data-find="G">G 管理大樓</button><button class="chip" data-find="I">I 中山堂</button><button class="chip" data-find="RA">RA 行政大樓</button><button class="chip" data-find="RHE">RHE 信義樓</button><button class="chip" data-find="出口">🚪 校外出口</button></div></div><div id="place"><div class="grab"></div><div class="pname" id="pname"></div><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><div class="nav" id="nav"></div></div></div>
+<div class="sheet"><div class="grab"></div><div id="start"><div class="title">萬能校園導航｜校園圖版</div><div class="sub" id="status">尚未取得 GPS 定位</div><div class="quick"><button class="chip main" id="codes">🔤 英文棟號</button><button class="chip" data-find="J">J 育英樓</button><button class="chip" data-find="G">G 管理大樓</button><button class="chip" data-find="I">I 中山堂</button><button class="chip" data-find="RA">RA 行政大樓</button><button class="chip" data-find="RHE">RHE 信義樓</button><button class="chip" data-find="出口">🚪 校外出口</button></div></div><div id="place"><div class="grab"></div><div class="pname" id="pname"></div><div class="meta" id="meta"></div><div class="row"><button class="btn back" id="back">返回</button><button class="btn go" id="route">開始導航</button></div><button class="calBtn" id="calibrate">🎯 我就在這棟，校正定位</button><div class="nav" id="nav"></div></div></div>
 </div>
 <script>
 (function(){
@@ -121,22 +121,43 @@ function distance(a,b){var R=6371000,r=Math.PI/180,dla=(b[0]-a[0])*r,dlo=(b[1]-a
 function select(p){selected=p;render();document.getElementById("start").style.display="none";document.getElementById("place").style.display="block";document.getElementById("pname").textContent=title(p);document.getElementById("nav").style.display="none";updateMeta();p._el&&p._el.scrollIntoView({behavior:"smooth",block:"center",inline:"center"})}
 function updateMeta(){if(!selected)return;var a=pos?[pos.lat,pos.lng]:[24.99085,121.23315],d=distance(a,[selected.lat,selected.lng]);document.getElementById("meta").textContent=selected.type+" · 約 "+Math.round(d)+" 公尺 · 步行約 "+Math.max(1,Math.ceil(d/75))+" 分鐘"}
 document.getElementById("back").onclick=function(){selected=null;render();routeLayer.innerHTML="";document.getElementById("place").style.display="none";document.getElementById("start").style.display="block"};
-function nearestBuilding(lat,lng){
- var best=null,bestD=1e9;
- data.forEach(function(x){
-  if(x.type==="校門")return;
-  var d=distance([lat,lng],[x.lat,x.lng]);
-  if(d<bestD){best=x;bestD=d}
- });
- return{p:best,d:bestD};
+var calibPoints=[];
+try{calibPoints=JSON.parse(localStorage.getItem("vnuGpsCalib")||"[]")}catch(e){calibPoints=[]}
+function rawProjected(lat,lng){
+ return{
+  x:167862.08682548*(lng-121.233)-780.03109671*(lat-24.9905)+746.13510045,
+  y:-5846.95819796*(lng-121.233)-133246.4576404*(lat-24.9905)+379.96420323
+ };
 }
 function projected(lat,lng){
- var x=167862.08682548*(lng-121.233)-780.03109671*(lat-24.9905)+746.13510045;
- var y=-5846.95819796*(lng-121.233)-133246.4576404*(lat-24.9905)+379.96420323;
- var near=nearestBuilding(lat,lng);
- if(near.p&&near.d<=35){x=near.p.x+near.p.w/2;y=near.p.y+near.p.h/2}
- return{x:x,y:y,snap:(near.p&&near.d<=35)?near.p:null,snapDist:near.d};
+ var p=rawProjected(lat,lng);
+ if(calibPoints.length){
+  var sw=0,dx=0,dy=0;
+  calibPoints.forEach(function(a){
+   var d=distance([lat,lng],[a.lat,a.lng]);
+   var w=1/Math.pow(Math.max(5,d),2);
+   sw+=w;dx+=a.dx*w;dy+=a.dy*w;
+  });
+  if(sw>0){p.x+=dx/sw;p.y+=dy/sw}
+ }
+ return p;
 }
+function saveCalibration(){
+ if(!selected)return;
+ if(!pos){
+  var w=document.getElementById("warn");w.style.display="block";w.textContent="⚠️ 先取得 GPS 定位，再按校正。";startGps();return;
+ }
+ var raw=rawProjected(pos.lat,pos.lng);
+ var tx=selected.x+selected.w/2,ty=selected.y+selected.h/2;
+ var point={code:selected.code,name:selected.name,lat:pos.lat,lng:pos.lng,dx:tx-raw.x,dy:ty-raw.y,time:Date.now()};
+ calibPoints=calibPoints.filter(function(x){return x.code!==selected.code});
+ calibPoints.push(point);
+ if(calibPoints.length>10)calibPoints=calibPoints.slice(-10);
+ localStorage.setItem("vnuGpsCalib",JSON.stringify(calibPoints));
+ setPos(pos.lat,pos.lng,pos.acc);
+ document.getElementById("status").textContent="GPS 已校正到 "+selected.code+" "+selected.name+" · 精度約 ±"+Math.round(pos.acc||0)+"m";
+}
+document.getElementById("calibrate").onclick=saveCalibration;
 document.getElementById("route").onclick=function(){if(!selected)return;var a=pos?projected(pos.lat,pos.lng):{x:760,y:350},b={x:selected.x+selected.w/2,y:selected.y+selected.h/2};routeLayer.innerHTML='<path class="route" d="M '+a.x+" "+a.y+" L "+b.x+" "+b.y+'"/>';var d=distance(pos?[pos.lat,pos.lng]:[24.99085,121.23315],[selected.lat,selected.lng]),n=document.getElementById("nav");n.style.display="block";n.innerHTML="🚶 前往 <b>"+title(selected)+"</b>　約 <b>"+Math.round(d)+" m</b>／<b>"+Math.max(1,Math.ceil(d/75))+" 分鐘</b><br><span style='color:#667085'>藍線是校園示意圖上的近似導引，請依實際道路與入口行走。</span>"};
 var q=document.getElementById("q"),results=document.getElementById("results");
 q.oninput=function(){var s=q.value.trim();if(!s){results.style.display="none";return}var f=data.filter(function(p){return match(p,s)}).slice(0,10);results.innerHTML=f.length?f.map(function(p,i){return'<div class="res" data-i="'+i+'"><b>'+esc(display(p))+'</b><small>'+esc(p.type)+'</small></div>'}).join(""):'<div class="res">找不到校內地點</div>';results.style.display="block";Array.prototype.forEach.call(results.querySelectorAll("[data-i]"),function(el){el.onclick=function(){select(f[Number(el.dataset.i)]);results.style.display="none";q.blur()}})};
@@ -159,7 +180,7 @@ function setPos(lat,lng,acc){
  var inside=(lat>=bounds.minLat&&lat<=bounds.maxLat&&lng>=bounds.minLng&&lng<=bounds.maxLng);
  if(inside){
   gpsLayer.innerHTML='<circle class="gpsAcc" cx="'+p.x+'" cy="'+p.y+'" r="'+r+'"/><circle class="gpsDot" cx="'+p.x+'" cy="'+p.y+'" r="14"/><text x="'+(p.x+22)+'" y="'+(p.y-18)+'" font-size="20" font-weight="900" fill="#1677ff">你在這裡</text>';
-  document.getElementById("status").textContent=p.snap?("GPS 已定位 · 目前約在 "+p.snap.code+" "+p.snap.name+" · 精度約 ±"+Math.round(acc||0)+"m"):("GPS 已定位 · 精度約 ±"+Math.round(acc||0)+"m");
+  document.getElementById("status").textContent="GPS 已定位"+(calibPoints.length?(" · 已校正 "+calibPoints.length+" 點"):"")+" · 精度約 ±"+Math.round(acc||0)+"m";
  }else{
   gpsLayer.innerHTML="";
   document.getElementById("status").textContent="GPS 已定位 · 目前在校園範圍外 · 精度約 ±"+Math.round(acc||0)+"m";
